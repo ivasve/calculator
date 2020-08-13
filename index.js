@@ -59,13 +59,13 @@ keys.addEventListener("click", (e) => {
       action === "multiply" ||
       action === "divide"
     ) {
-      //   console.log("operator key!");
+      // data entering the calculation
       const firstValue = calculator.dataset.firstValue;
       const operator = calculator.dataset.operator;
       const secondValue = displayedNum;
 
-      // Note: It's sufficient to check for firstValue and operator because secondValue always exists
       if (firstValue && operator && previousKeyType !== "operator") {
+        // execute the calculation with below parameters
         display.textContent = calculate(firstValue, operator, secondValue);
       }
 
@@ -75,23 +75,18 @@ keys.addEventListener("click", (e) => {
       // Add custom attribute to tell if the previous key is an operator key
       calculator.dataset.previousKeyType = "operator";
 
-      //To get the operator
       calculator.dataset.firstValue = displayedNum;
+      //get the operator to be used in calculation
       calculator.dataset.operator = action;
-
-      // Do nothing if string has a dot
-      //   if (!displayedNum.includes(".")) {
-      //     display.textContent = displayedNum + ".";
-      //   }
     }
 
     // condition-what happens, if the pressed key has data-action called decimal
     if (action === "decimal") {
-      //   console.log("decimal key!");
-
+      // if the input doesn't contain a dot already, then add it
       if (!displayedNum.includes(".")) {
         display.textContent = displayedNum + ".";
       } else if (previousKeyType === "operator") {
+        // if the input starts with a dot then assume 0 at the start
         display.textContent = "0.";
       }
 
@@ -100,13 +95,13 @@ keys.addEventListener("click", (e) => {
 
     // condition-what happens, if the pressed key has data-action called clear
     if (action === "clear") {
-      //   console.log("clear key!");
+      // if the text of the clear button is "AC" (type string) , clear all inputs
       if (key.textContent === "AC") {
         calculator.dataset.firstValue = "";
-        calculator.dataset.modValue = "";
         calculator.dataset.operator = "";
         calculator.dataset.previousKeyType = "";
       } else {
+        // change the text of the clear button back to "AC" (from "CE")
         key.textContent = "AC";
       }
 
@@ -114,20 +109,22 @@ keys.addEventListener("click", (e) => {
       calculator.dataset.previousKeyType = "clear";
     }
 
+    // after user clicks on any key, change the TEXT of the clear button from AC to CE
     if (action !== "clear") {
       const clearButton = calculator.querySelector("[data-action=clear]");
       clearButton.textContent = "CE";
     }
 
     // condition-what happens, if the pressed key has data-action called calculate (i.e. equal operator)
+    // retreive previous input and current input then execute the calculation with these parameters
     if (action === "calculate") {
-      //   console.log("equal key!");
       const firstValue = calculator.dataset.firstValue;
       const operator = calculator.dataset.operator;
 
       //the second number
       const secondValue = displayedNum;
 
+      // calculate
       display.textContent = calculate(firstValue, operator, secondValue);
       calculator.dataset.previousKeyType = "calculate";
     }
@@ -140,12 +137,28 @@ const calculate = (n1, operator, n2) => {
   // n2 is the second entered number converted from a string to a decimal number
   const firstNum = parseFloat(n1);
   const secondNum = parseFloat(n2);
+  // if the n1 string is not a number then return error
+  if (isNaN(firstNum)) {
+    return "Error";
+  }
+  // if the n2 string is not a number then return error
+  if (isNaN(secondNum)) {
+    return "Error";
+  }
+  let result;
   // if the user presses + symbol, addition of the numbers will be perfomed
-  if (operator === "add") return firstNum + secondNum;
+  if (operator === "add") result = firstNum + secondNum;
   // if the user presses - symbol, subtraction of the numbers will be perfomed
-  if (operator === "subtract") return firstNum - secondNum;
+  if (operator === "subtract") result = firstNum - secondNum;
   // if the user presses * symbol, multiplication of the numbers will be perfomed
-  if (operator === "multiply") return firstNum * secondNum;
+  if (operator === "multiply") result = firstNum * secondNum;
   // if the user presses / symbol, division of the numbers will be perfomed
-  if (operator === "divide") return firstNum / secondNum;
+  if (operator === "divide") result = firstNum / secondNum;
+
+  // if the result of the mathematical operation is not a number
+  // or is not a finite number, return error
+  if (isNaN(result) || !isFinite(result)) {
+    return "Error";
+  }
+  return result;
 };
