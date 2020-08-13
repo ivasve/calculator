@@ -1,8 +1,3 @@
-// ADD comments into the code
-// write a summary into the Readme. on GitHub
-// to be able to explain how the calculator works
-// diagrams.net (drawio) if time, build a flow chart
-
 // take an HTML element and assign it to a declared variable
 const calculator = document.querySelector(".calculator");
 // variable for ALL keys (numbers, operators, decimal, clear, equal)
